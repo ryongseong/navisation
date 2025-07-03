@@ -41,12 +41,32 @@ const translations = {
   },
 };
 
-export default function ChatPage() {
+export default 
+function ChatPage() {
   const [input, setInput] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("영어");
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
   const hasProcessedQuery = useRef(false);
+
+  // session id 생성 및 로컬 스토리지 유지
+  useEffect(() => {
+    // 새로고침 감지 (navigation type이 'reload'일 때)
+  const navEntry = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming;
+  const isReload = navEntry?.type === "reload";
+
+  if (isReload) {
+    sessionStorage.removeItem("chat_session_id");  // 세션ID 강제 삭제
+  }
+  
+  let sid = sessionStorage.getItem("chat_session_id");
+  if (!sid) {
+    sid = crypto.randomUUID();
+    sessionStorage.setItem("chat_session_id", sid);
+  }
+  setSessionId(sid);
+}, []);
 
   const languageOptions = [
     { code: "en", name: "English", flag: "🇺🇸", lang: "영어" },
@@ -87,31 +107,36 @@ export default function ChatPage() {
     // 언어 설정
     setSelectedLanguage(lang);
 
-    if (query && !hasProcessedQuery.current) {
-      hasProcessedQuery.current = true;
-      console.log("Processing initial query:", query, "Language:", lang);
+    if (!sessionId || !query || hasProcessedQuery.current) return;
 
-      // 언어에 맞는 초기 메시지로 설정
-      const langTexts =
-        translations[lang as keyof typeof translations] || translations["영어"];
-      setMessages([
-        { role: "assistant", content: langTexts.initialMessage },
-        { role: "user", content: query },
-      ]);
+    console.log("Processing initial query:", query, "Language:", lang);
 
-      // 언어 정보와 함께 질문 실행
-      mutation.mutate({ question: query, language: lang });
-    }
-  }, [searchParams]);
+    // 언어에 맞는 초기 메시지로 설정
+    const langTexts =
+      translations[lang as keyof typeof translations] || translations["영어"];
+    setMessages([
+      { role: "assistant", content: langTexts.initialMessage },
+      { role: "user", content: query },
+    ]);
+
+    // 언어 정보와 함께 질문 실행
+    mutation.mutate({
+      question: query,
+      language: lang,
+      sessionId,
+    });
+  }, [searchParams, sessionId]);
 
   // React Query mutation: 질문을 서버에 보내고 답변 받기
   const mutation = useMutation({
     mutationFn: ({
       question,
       language,
+      sessionId,
     }: {
       question: string;
       language?: string;
+      sessionId?: string;
     }) => {
       console.log(
         "Sending question to server:",
@@ -120,7 +145,7 @@ export default function ChatPage() {
         language
       );
       // 언어 정보도 함께 전송
-      return fetchAnswer(question, language);
+      return fetchAnswer(question, language, sessionId || "default");
     },
     onSuccess: (data) => {
       console.log("Received answer:", data.answer);
@@ -149,7 +174,7 @@ export default function ChatPage() {
     // 유저 메시지를 먼저 추가
     setMessages((prev) => [...prev, { role: "user", content: input }]);
     // 언어 정보와 함께 질문 보내기
-    mutation.mutate({ question: input, language: selectedLanguage });
+    mutation.mutate({ question: input, language: selectedLanguage, sessionId: sessionId || "default"});
     setInput("");
   };
 

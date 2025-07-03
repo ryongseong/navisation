@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from fastapi import Query
 from fastapi.middleware.cors import CORSMiddleware
 
+from langchain.memory import ConversationBufferMemory
+
 app = FastAPI()
 
 origins = [
@@ -27,6 +29,8 @@ UPSTAGE_API_KEY = os.getenv("UPSTAGE_API_KEY")
 
 vectorstore = load_vectorstore(UPSTAGE_API_KEY)
 
+session_memories = {}
+
 
 @app.get("/")
 async def root():
@@ -34,11 +38,23 @@ async def root():
 
 
 @app.get("/chat-request")
-async def chat_request(req: str = Query(..., description="질문 내용"), lang: str = Query(..., description="언어 코드")):
-    print(f"req: {req}, lang: {lang}")
-    ans = get_answer(vectorstore, req, lang)
+async def chat_request(req: str = Query(..., description="질문 내용"),
+                       lang: str = Query(..., description="언어 코드"),
+                       session_id: str = Query(..., description="세션 ID")
+                       ):
+    print(f"[session: {session_id}] req: {req}, lang: {lang}")
+    
+    print(session_memories)
+    # 세션별 memory 객체 재사용 또는 생성
+    if session_id not in session_memories:
+        session_memories[session_id] = ConversationBufferMemory(return_messages=False)
+
+    memory = session_memories[session_id]
+    
+    ans = get_answer(vectorstore, req, lang, memory)
     return {"question": req,
             "lang": lang,
+            "session_id": session_id,
             "answer": ans}
 
 if __name__ == "__main__":
