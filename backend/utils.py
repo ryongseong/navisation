@@ -351,9 +351,10 @@ def load_vectorstore(UPSTAGE_API_KEY):
     return vectorstore
 
 
-def get_answer(vectorstore, question):
+def get_answer(vectorstore, question, lang):
     llm = ChatUpstage()
     embedding_model = UpstageEmbeddings(model="embedding-query")
+    language = lang
 
     visa_topics = [
         "기타", "외교(A-1)", "공무(A-2)", "협정(A-3)", "사증면제(B-1)", "관광통과(B-2)",
@@ -387,13 +388,13 @@ def get_answer(vectorstore, question):
         1. 사증 매뉴얼 (Visa Manual) – 한국 입국 전 비자 발급에 대한 정보  
         2. 체류 매뉴얼 (Stay Manual) – 입국 후 체류 연장, 체류 자격 변경 등에 대한 정보
 
-        질문과 컨텍스트를 잘 읽고, 아래 지침에 따라 사용자가 사용한 언어로 가장 적절한 답변을 해 주세요:
-        - 반드시 사용자가 사용한 언어를 사용하여 답변하세요!!! 영어로 질문하면 영어로 답하세요. 중국어로 질문하면 중국어로 답하세요. 독일어로 질문하면 독일어로 답하세요. 베트남어로 질문하면 베트남어로 답하세요. 태국어로 질문하면 태국어로 답하세요. 러시아어로 질문하면 러시아어로 답하세요. 스페인어로 질문하면 스페인어로 답하세요. 프랑스어로 질문하면 프랑스어로 답하세요.
+        질문과 컨텍스트를 잘 읽고, 아래 지침에 따라 사용자가 사용한 언어인 {language}으로 가장 적절한 답변을 해 주세요:
+        - 반드시 사용자가 사용한 언어인 {language}를 사용하여 답변하세요!!!
         - 각 비자에는 세부 유형(sub-type)이 있을 수 있습니다 (예: D-8-1, D-8-4).  
-          → 각 세부 비자별 요건 및 제출 서류가 다르므로, 반드시 정확한 세부 유형을 구분하여 사용자가 사용한 언어로 답변해 주세요.
+          → 각 세부 비자별 요건 및 제출 서류가 다르므로, 반드시 정확한 세부 유형을 구분하여 사용자가 사용한 언어인 {language}으로 답변해 주세요.
         - 각 비자에 대한 제출 서류, 대상자, 자격요건 등은 모든 조건을 만족해야 하는지, 아니면 일부만 만족해도 되는지 명확히 구분하여 답변해 주세요.
         - 점수제에도 여러 종류가 있습니다. 비자에 따라 해당하는 점수제가 달라지니 유의해서 답변해 주세요.
-        - 컨텍스트에 답변에 필요한 정보가 부족하다면, 절대로 추측하지 말고 주어진 내용에 기반해서만 사용자가 사용한 언어로 답변해 주세요.
+        - 컨텍스트에 답변에 필요한 정보가 부족하다면, 절대로 추측하지 말고 주어진 내용에 기반해서만 사용자가 사용한 언어인 {language}으로 답변해 주세요.
 
         ---
 
@@ -474,6 +475,7 @@ def get_answer(vectorstore, question):
     answer = chain.invoke({
         "context": context_str,
         "question": question,
+        "language": language,
         "visa_topics": ", ".join(visa_topics),
         "stay_topics": ", ".join(stay_topics)
     })

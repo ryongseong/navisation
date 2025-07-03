@@ -34,9 +34,11 @@ async def root():
 
 
 @app.get("/chat-request")
-async def chat_request(req: str = Query(..., description="질문 내용")):
-    ans = get_answer(vectorstore, req)
+async def chat_request(req: str = Query(..., description="질문 내용"), lang: str = Query(..., description="언어 코드")):
+    print(f"req: {req}, lang: {lang}")
+    ans = get_answer(vectorstore, req, lang)
     return {"question": req,
+            "lang": lang,
             "answer": ans}
 
 if __name__ == "__main__":
