@@ -11,7 +11,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:3000",  # Next.js 개발서버 주소
-    "https://your-production-domain.com",  # 배포 후 프론트 도메인 추가
+    "https://navisation.vercel.app",  # 배포 후 프론트 도메인 추가
 ]
 
 app.add_middleware(
