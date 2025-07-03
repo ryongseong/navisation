@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+// import Image from "next/image";
 
 // 다국어 텍스트 정의
 const translations = {
@@ -276,7 +276,7 @@ export default function Home() {
                         key={`first-${index}`}
                         className="text-blue-100/70 text-sm px-4 py-2 rounded-full"
                       >
-                        "{example}"
+                        &quot;{example}&quot;
                       </span>
                     ))}
                     {/* 두 번째 세트 (무한 스크롤을 위한 복사본) */}
@@ -285,7 +285,7 @@ export default function Home() {
                         key={`second-${index}`}
                         className="text-blue-100/70 text-sm px-4 py-2 rounded-full"
                       >
-                        "{example}"
+                        &quot;{example}&quot;
                       </span>
                     ))}
                   </motion.div>
