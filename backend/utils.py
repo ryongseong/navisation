@@ -14,8 +14,8 @@ from langchain_upstage import UpstageEmbeddings
 from ragas.metrics import context_precision, context_recall
 from ragas import evaluate
 from datasets import Dataset
-import difflib
 from langchain.memory import ConversationBufferMemory
+from rapidfuzz import fuzz
 
 UPSTAGE_API_KEY = os.getenv("UPSTAGE_API_KEY")
 
@@ -389,7 +389,7 @@ def get_answer(vectorstore, question, lang, memory):
         1. 사증 매뉴얼 (Visa Manual) – 한국 입국 전 비자 발급에 대한 정보  
         2. 체류 매뉴얼 (Stay Manual) – 입국 후 체류 연장, 체류 자격 변경 등에 대한 정보
 
-        질문과 컨텍스트를 잘 읽고, 아래 지침에 따라 사용자가 사용한 언어인 {language}으로 가장 적절한 답변을 해 주세요:
+        질문과 컨텍스트를 잘 읽고, 아래 지침에 따라 사용자가 사용한 언어인 {language}으로 가장 적절한 답변을 해 주세요. 적절한 주제와 내용, 이모지로 구성하여 읽기 쉽게 작성해 주세요.:
         - 반드시 사용자가 사용한 언어인 {language}를 사용하여 답변하세요!!!
         - 각 비자에는 세부 유형(sub-type)이 있을 수 있습니다 (예: D-8-1, D-8-4).  
           → 각 세부 비자별 요건 및 제출 서류가 다르므로, 반드시 정확한 세부 유형을 구분하여 사용자가 사용한 언어인 {language}으로 답변해 주세요.
@@ -457,10 +457,9 @@ def get_answer(vectorstore, question, lang, memory):
     #     filtered_docs = []
     
 
-    def is_similar(a, b, threshold=0.5):
-        return difflib.SequenceMatcher(None, a, b).ratio() > threshold
+    def is_similar(a, b, threshold=60):  # 0~100 점수
+        return fuzz.partial_ratio(a, b) > threshold
 
-    # 3. 토픽 기반 필터링 (유사도 기반)
     if inferred_topic:
         filtered_docs = [
             doc for doc in all_results
