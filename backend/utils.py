@@ -15,6 +15,8 @@ from ragas.metrics import context_precision, context_recall
 from ragas import evaluate
 from datasets import Dataset
 
+from langchain.memory import ConversationBufferMemory
+
 UPSTAGE_API_KEY = os.getenv("UPSTAGE_API_KEY")
 
 
@@ -351,7 +353,7 @@ def load_vectorstore(UPSTAGE_API_KEY):
     return vectorstore
 
 
-def get_answer(vectorstore, question, lang):
+def get_answer(vectorstore, question, lang, memory):
     llm = ChatUpstage()
     embedding_model = UpstageEmbeddings(model="embedding-query")
     language = lang
@@ -395,7 +397,8 @@ def get_answer(vectorstore, question, lang):
         - 각 비자에 대한 제출 서류, 대상자, 자격요건 등은 모든 조건을 만족해야 하는지, 아니면 일부만 만족해도 되는지 명확히 구분하여 답변해 주세요.
         - 점수제에도 여러 종류가 있습니다. 비자에 따라 해당하는 점수제가 달라지니 유의해서 답변해 주세요.
         - 컨텍스트에 답변에 필요한 정보가 부족하다면, 절대로 추측하지 말고 주어진 내용에 기반해서만 사용자가 사용한 언어인 {language}으로 답변해 주세요.
-
+        - 이전 대화나 이전 답변에서 언급한 내용은 되도록 대답에 포함하지 말고 새로운 정보만 답변에 포함시켜주세요.
+                                                   
         ---
 
         질문:
@@ -468,8 +471,9 @@ def get_answer(vectorstore, question, lang):
         context_docs = filtered_docs
 
     # 5. 컨텍스트 구성
-    context = [doc.page_content for doc in context_docs]
-    context_str = "\n\n".join(context)
+    history_str = memory.load_memory_variables({})["history"]
+    context = "\n\n".join(doc.page_content for doc in context_docs)
+    context_str = history_str + "\n\n"+ context
 
     # 6. LLM 호출 (필수 프롬프트 변수 포함)
     answer = chain.invoke({
@@ -479,6 +483,8 @@ def get_answer(vectorstore, question, lang):
         "visa_topics": ", ".join(visa_topics),
         "stay_topics": ", ".join(stay_topics)
     })
+
+    memory.save_context({"input": question}, {"output": answer})
 
     return answer
 
