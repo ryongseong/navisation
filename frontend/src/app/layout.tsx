@@ -1,10 +1,19 @@
-"use client"
+"use client";
 
 // import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useState } from 'react'
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+// QueryClient를 컴포넌트 외부에서 생성
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // 캐시 시간 설정
+      staleTime: 60 * 1000, // 1분
+    },
+  },
+});
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -16,9 +25,11 @@ import { useState } from 'react'
 //   subsets: ["latin"],
 // });
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient())
-
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="ko">
       <body>
@@ -27,7 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </QueryClientProvider>
       </body>
     </html>
-  )
+  );
 }
 
 // export const metadata: Metadata = {
