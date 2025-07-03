@@ -14,7 +14,7 @@ from langchain_upstage import UpstageEmbeddings
 from ragas.metrics import context_precision, context_recall
 from ragas import evaluate
 from datasets import Dataset
-
+import difflib
 from langchain.memory import ConversationBufferMemory
 
 UPSTAGE_API_KEY = os.getenv("UPSTAGE_API_KEY")
@@ -355,7 +355,6 @@ def load_vectorstore(UPSTAGE_API_KEY):
 
 def get_answer(vectorstore, question, lang, memory):
     llm = ChatUpstage()
-    embedding_model = UpstageEmbeddings(model="embedding-query")
     language = lang
 
     visa_topics = [
@@ -436,8 +435,6 @@ def get_answer(vectorstore, question, lang, memory):
 
                          선택한 주제:""") | llm | StrOutputParser()
 
-    # all_topics는 visa_topics + stay_topics
-    all_topics = visa_topics + stay_topics
 
     # 1. 토픽 추론
     try:
@@ -454,8 +451,21 @@ def get_answer(vectorstore, question, lang, memory):
     all_results = faiss_retriever.invoke(question)
 
     # 3. 토픽 기반 필터링 (정상 추론된 경우만)
+    # if inferred_topic:
+    #     filtered_docs = [doc for doc in all_results if inferred_topic in doc.metadata.get("topic", "")]
+    # else:
+    #     filtered_docs = []
+    
+
+    def is_similar(a, b, threshold=0.5):
+        return difflib.SequenceMatcher(None, a, b).ratio() > threshold
+
+    # 3. 토픽 기반 필터링 (유사도 기반)
     if inferred_topic:
-        filtered_docs = [doc for doc in all_results if inferred_topic in doc.metadata.get("topic", "")]
+        filtered_docs = [
+            doc for doc in all_results
+            if is_similar(inferred_topic, doc.metadata.get("topic", ""))
+        ]
     else:
         filtered_docs = []
 
