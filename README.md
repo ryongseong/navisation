@@ -23,11 +23,17 @@ Upstage의 Solar Pro 모델을 활용하여 비자 정보, 체류 정보 등 다
 
 1. Python 3.11 이상이 설치되어 있어야 합니다. (현재 3.11.9 버전 사용 중)
 2. `backend` 디렉토리로 이동합니다.
-3. 필요한 패키지를 설치합니다:
+3. `.env` 파일을 생성하고, 필요한 환경 변수를 설정합니다.  
+   예시:
+   ```env
+   UPSTAGE_API_KEY=your_upstage_api_key
+   DEEPL_AUTH_KEY=your_deepl_auth_key
+   ```
+4. 필요한 패키지를 설치합니다:
    ```bash
    pip install -r requirements.txt
    ```
-4. 서버를 실행합니다:
+5. 서버를 실행합니다:
    ```bash
    python main.py
    ```
@@ -36,11 +42,16 @@ Upstage의 Solar Pro 모델을 활용하여 비자 정보, 체류 정보 등 다
 
 1. Node.js 18 이상이 설치되어 있어야 합니다. (현재 22 버전 사용 중)
 2. `frontend` 디렉토리로 이동합니다.
-3. 필요한 패키지를 설치합니다:
+3. `.env` 파일을 생성하고, 필요한 환경 변수를 설정합니다.  
+   예시:
+   ```env
+   NEXT_PUBLIC_API_URL=http://localhost:8000
+   ```
+4. 필요한 패키지를 설치합니다:
    ```bash
    npm install
    ```
-4. 개발 서버를 실행합니다:
+5. 개발 서버를 실행합니다:
    ```bash
    npm run dev
    ```
