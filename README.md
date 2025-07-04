@@ -16,6 +16,8 @@ Upstage의 Solar Pro 모델을 활용하여 비자 정보, 체류 정보 등 다
 - **사용자 친화적인 UI**: Next.js와 Tailwind CSS를 사용하여 직관적이고 반응형인 사용자 인터페이스를 제공합니다.
 - **RAG 아키텍처**: FastAPI와 Upstage RAG 모델을 사용하여 사용자의 질문에 대한 정확한 답변을 제공합니다.
 - **다국어 지원**: 다양한 언어로 비자 정보를 제공하여 글로벌 사용자에게 유용합니다.
+- **번역 기능**: DeepL API를 사용하여 비자 정보를 다양한 언어로 번역할 수 있습니다.
+- **배포**: 프론트엔드는 Vercel, 백엔드는 Fly.io를 통해 배포되어 언제 어디서나 접근 가능합니다.
 
 ## 사용법
 
@@ -63,7 +65,6 @@ Upstage의 Solar Pro 모델을 활용하여 비자 정보, 체류 정보 등 다
 ## 기술 스택
 - **Backend**: 
   - FastAPI
-  - Upstage RAG 모델 (solar pro)
   - Python 3.11
 - **Frontend**:
   - Next.js
@@ -72,6 +73,9 @@ Upstage의 Solar Pro 모델을 활용하여 비자 정보, 체류 정보 등 다
 - **Deployment**:
   - FrontEnd : Vercel
   - BackEnd : Fly.io
+- **Data**:
+  - Upstage RAG 모델 (solar pro)
+  - DeepL API (번역 서비스)
 
 ## 아키텍처 설계도
 ![Architecture Diagram](assets/architecture.png)
