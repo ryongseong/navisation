@@ -156,7 +156,7 @@ python-dateutil==2.9.0.post0
 python-dotenv==1.1.1
 python-multipart==0.0.20
 pytz==2025.2
-pywin32==310
+# pywin32==310
 PyYAML==6.0.2
 pyzmq==27.0.0
 ragas==0.2.15
