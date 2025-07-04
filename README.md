@@ -1,81 +1,36 @@
-# Navisation
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## 프로젝트 소개
+## Getting Started
 
-[사이트 바로가기](https://navisation.vercel.app/)
+First, run the development server:
 
-Navisation은 여행자와 사용자를 위한 내비게이션 및 비자 정보 안내 서비스를 제공합니다. 
-이 프로젝트는 Python 기반 FastAPI 백엔드와 Next.js 기반 프론트엔드로 구성되어 있습니다.
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-RAG(리트리벌-증강-생성) 아키텍처를 사용하여 사용자의 질문에 대한 정확하고 유용한 정보를 제공합니다.
-Upstage의 Solar Pro 모델을 활용하여 비자 정보, 체류 정보 등 다양한 비자 관련 데이터를 제공합니다.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## 기능
-- **비자 정보 제공**: 사용자가 입력한 국가와 비자 유형에 따라 필요한 비자 정보를 제공합니다.
-- **체류 정보 안내**: 사용자가 입력한 국가와 체류 기간에 따라 필요한 체류 정보를 안내합니다.
-- **사용자 친화적인 UI**: Next.js와 Tailwind CSS를 사용하여 직관적이고 반응형인 사용자 인터페이스를 제공합니다.
-- **RAG 아키텍처**: FastAPI와 Upstage RAG 모델을 사용하여 사용자의 질문에 대한 정확한 답변을 제공합니다.
-- **다국어 지원**: 다양한 언어로 비자 정보를 제공하여 글로벌 사용자에게 유용합니다.
-- **번역 기능**: DeepL API를 사용하여 비자 정보를 다양한 언어로 번역할 수 있습니다.
-- **배포**: 프론트엔드는 Vercel, 백엔드는 Fly.io를 통해 배포되어 언제 어디서나 접근 가능합니다.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-## 사용법
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-### 1. 백엔드 실행 방법
+## Learn More
 
-1. Python 3.11 이상이 설치되어 있어야 합니다. (현재 3.11.9 버전 사용 중)
-2. `backend` 디렉토리로 이동합니다.
-3. `.env` 파일을 생성하고, 필요한 환경 변수를 설정합니다.  
-   예시:
-   ```env
-   UPSTAGE_API_KEY=your_upstage_api_key
-   DEEPL_AUTH_KEY=your_deepl_auth_key
-   ```
-4. 필요한 패키지를 설치합니다:
-   ```bash
-   pip install -r requirements.txt
-   ```
-5. 서버를 실행합니다:
-   ```bash
-   python main.py
-   ```
+To learn more about Next.js, take a look at the following resources:
 
-### 2. 프론트엔드 실행 방법
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-1. Node.js 18 이상이 설치되어 있어야 합니다. (현재 22 버전 사용 중)
-2. `frontend` 디렉토리로 이동합니다.
-3. `.env` 파일을 생성하고, 필요한 환경 변수를 설정합니다.  
-   예시:
-   ```env
-   NEXT_PUBLIC_API_URL=http://localhost:8000
-   ```
-4. 필요한 패키지를 설치합니다:
-   ```bash
-   npm install
-   ```
-5. 개발 서버를 실행합니다:
-   ```bash
-   npm run dev
-   ```
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-### 3. 주요 경로
-- 백엔드: `backend/main.py`
-- 프론트엔드: `frontend/src/app`
+## Deploy on Vercel
 
-## 기술 스택
-- **Backend**: 
-  - FastAPI
-  - Python 3.11
-- **Frontend**:
-  - Next.js
-  - TypeScript
-  - Tailwind CSS
-- **Deployment**:
-  - FrontEnd : Vercel
-  - BackEnd : Fly.io
-- **Data**:
-  - Upstage RAG 모델 (solar pro)
-  - DeepL API (번역 서비스)
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-## 아키텍처 설계도
-![Architecture Diagram](assets/architecture.png)
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
